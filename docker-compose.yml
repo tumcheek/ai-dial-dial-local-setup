@@ -52,8 +52,19 @@ services:
       'aidial.redis.singleServerConfig.address': 'redis://redis:6379'
     depends_on:
       - redis
+    extra_hosts:
+      - "host.docker.internal:192.168.127.254"
     volumes:
       - ./settings:/opt/settings
       - ${DIAL_DIR:-.}/core:/opt/config
       - ${DIAL_DIR:-.}/core-logs/:/app/log
-      - ${DIAL_DIR:-.}/core-data/:/app/data
+      - core-data:/app/data
+
+  adapter-dial:
+    image: epam/ai-dial-adapter-dial:development
+    environment:
+      DIAL_URL: "http://core:8080"
+      LOG_LEVEL: "INFO"
+
+volumes:
+  core-data:
